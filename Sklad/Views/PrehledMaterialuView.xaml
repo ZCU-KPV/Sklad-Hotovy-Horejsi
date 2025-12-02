@@ -1,0 +1,202 @@
+﻿<Window x:Class="Sklad.Views.PrehledMaterialuView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Sklad.Views"
+        xmlns:viewModels="clr-namespace:Sklad.ViewModels"
+        mc:Ignorable="d"
+        Title="Přehled materiálu" Height="600" Width="1000"
+        WindowStartupLocation="CenterScreen">
+
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- === LEVÝ PANEL: toolbar + editační formulář === -->
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Toolbar akcí (už jen přes Commandy) -->
+            <WrapPanel Grid.Row="0" Margin="5">
+                <Button ToolTip="Přidat"  Margin="5" Width="24" Padding="2"
+                    Command="{Binding PridatMaterialCommand}">
+                    <Image Source="..\Images\Icons\Add.png"></Image>
+                </Button>
+
+                <WrapPanel IsEnabled="{Binding JeOznacenMaterial, UpdateSourceTrigger=PropertyChanged}">
+
+                    <Button ToolTip="Smazat" Margin="5"  Width="24" Padding="2"
+                         Command="{Binding VymazatMaterialCommand}">
+                        <Image Source="..\Images\Icons\Delete.png"></Image>
+                    </Button>
+
+                    <Button ToolTip="Opravit" Margin="5"  Width="24" Padding="2"
+                    Command="{Binding OpravitMaterialCommand}">
+                        <Image Source="..\Images\Icons\Edit.png"></Image>
+                    </Button>
+      
+                </WrapPanel>
+            </WrapPanel>
+
+            <!-- Editační formulář vlevo; zapíná se jen v režimu Přidávání/Editace -->
+            <GroupBox Grid.Row="1"
+                  Header="{Binding AktualniRezimString}"
+                  IsEnabled="{Binding RezimPridavaniNeboEditace}">
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- ID + Měrná jednotka -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Číslo:" VerticalAlignment="Center" />
+                    <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding MaterialSelected.MaterialId}" IsReadOnly="True"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Měrná jednotka:" VerticalAlignment="Center" />
+                    <ComboBox  Grid.Row="1" Grid.Column="1" 
+                           ItemsSource="{Binding MerneJednotkyCol}"
+                           SelectedValue="{Binding MaterialSelected.MernaJednotka}"
+                           DisplayMemberPath="Popis"/>
+
+                    <!-- Název -->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Název materiálu:" VerticalAlignment="Center" />
+                    <TextBox   Grid.Row="2" Grid.Column="1"
+                           Text="{Binding MaterialSelected.Nazev, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+
+                    <!-- Kvantitní pole -->
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Max. množství v paletě:" VerticalAlignment="Center" />
+                    <TextBox   Grid.Row="3" Grid.Column="1"
+                           Text="{Binding MaterialSelected.MnozDoPal, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Pojistné množství:" VerticalAlignment="Center" />
+                    <TextBox   Grid.Row="4" Grid.Column="1"
+                           Text="{Binding MaterialSelected.MnozPoj, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+
+                    <!-- Komentář -->
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Komentář:" />
+                    <TextBox   Grid.Row="5" Grid.Column="1" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
+                           Text="{Binding MaterialSelected.Komentar, UpdateSourceTrigger=PropertyChanged}"/>
+
+      
+                        <Button Content="OK"  Grid.Row="6"    Margin="5" Command="{Binding PotvrditCommand}"/>
+                        <Button Content="Storno" Grid.Column="1"  Grid.Row="6"  Margin="5" Command="{Binding StornoCommand}"/>
+
+
+                </Grid>
+            </GroupBox>
+        </Grid>
+
+        <GridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="LightGray"/>
+
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox Grid.Row="0" Header="Filtry" Margin="5">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                   Text="Kód:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+
+                    <TextBox   Grid.Row="0" Grid.Column="1"         
+                   Text="{Binding FiltrKod, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                    <TextBlock Grid.Row="1" Grid.Column="0"
+                   Text="Název:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox   Grid.Row="1" Grid.Column="1"
+                  
+                   Text="{Binding FiltrNazev, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Materiál" Grid.Row="1" Margin="5">
+            <DataGrid 
+                      AutoGenerateColumns="False" IsReadOnly="True"
+                      ItemsSource="{Binding MaterialyCol}" 
+                      SelectedItem="{Binding MaterialSelected}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Kód" Binding="{Binding MaterialId}" Width="Auto"/>
+                    <DataGridTextColumn Header="Název" Binding="{Binding Nazev}" Width="2*"/>
+                    <DataGridTextColumn Header="Jednotka" Binding="{Binding MernaJednotka.Popis}" Width="*" Visibility="Hidden"/>
+                    <DataGridTextColumn Header="Pojistné" Binding="{Binding MnozPoj}" Width="*"/>
+                    <DataGridTextColumn Header="Mn. do pal." Binding="{Binding MnozDoPal}" Width="*" Visibility="Hidden"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            </GroupBox>
+        </Grid>
+
+        <GridSplitter Grid.Column="3" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="LightGray"/>
+
+        <Grid Grid.Column="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+
+            <GroupBox Header="Palety vybraného materiálu">
+                <DataGrid Grid.Row="1" Margin="5"
+                      AutoGenerateColumns="False" IsReadOnly="True"
+                      ItemsSource="{Binding MaterialSelected.Palety}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID Palety" Binding="{Binding PaletaId}"/>
+                        <DataGridTextColumn Header="Množství" Binding="{Binding Mnozstvi}"/>
+                        <DataGridTextColumn Header="Typ" Binding="{Binding Typ, Converter={StaticResource EnumToStringConverter}}" Width="*"/>
+                        <DataGridTextColumn Header="Stav" Binding="{Binding Stav, Converter={StaticResource EnumToStringConverter}}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+
+
+            <WrapPanel Grid.Row="1" Margin="0,0,10,0" HorizontalAlignment="Right">
+                <WrapPanel.Resources>
+                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Setter Property="FontWeight" Value="Black"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding MaterialSelected.PodPojistnymMnozstvim}" Value="true">
+                                <Setter Property="Foreground" Value="Red"/>
+                                <Setter Property="ToolTip" Value="Celkové množství je pod pojistnou zásobou."/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </WrapPanel.Resources>
+                <TextBlock Text="Celkové množství: " />
+                <TextBlock Text="{Binding MaterialSelected.CelkoveMnozstvi}" />
+            </WrapPanel>
+
+
+        </Grid>
+    </Grid>
+</Window>

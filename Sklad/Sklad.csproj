@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+
+
+  <ItemGroup>
+    <None Remove="Images\Icons\Add.png" />
+    <None Remove="Images\Icons\Delete.png" />
+    <None Remove="Images\Icons\Down.png" />
+    <None Remove="Images\Icons\Edit.png" />
+    <None Remove="Images\Icons\Relocate.png" />
+    <None Remove="Images\Icons\Up.png" />
+    <None Remove="Images\Logo.png" />
+    <None Remove="Images\MainMenu\material.png" />
+    <None Remove="Images\MainMenu\paleta.png" />
+    <None Remove="Images\MainMenu\prehledmat.png" />
+    <None Remove="Images\MainMenu\prehledpal.png" />
+    <None Remove="Images\MainMenu\save.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MahApps.Metro" Version="2.4.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataEntity\DataEntity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Icons\Add.png" />
+    <Resource Include="Images\Icons\Delete.png" />
+    <Resource Include="Images\Icons\Down.png" />
+    <Resource Include="Images\Icons\Edit.png" />
+    <Resource Include="Images\Icons\Relocate.png" />
+    <Resource Include="Images\Icons\Up.png" />
+    <Resource Include="Images\Logo.png" />
+    <Resource Include="Images\MainMenu\material.png" />
+    <Resource Include="Images\MainMenu\paleta.png" />
+    <Resource Include="Images\MainMenu\prehledmat.png" />
+    <Resource Include="Images\MainMenu\prehledpal.png" />
+    <Resource Include="Images\MainMenu\save.png" />
+  </ItemGroup>
+
+</Project>

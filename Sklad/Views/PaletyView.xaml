@@ -1,0 +1,119 @@
+<Window x:Class="Sklad.Views.PaletyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Sklad.Views"
+             xmlns:vm="clr-namespace:Sklad.ViewModels"
+             xmlns:conv="clr-namespace:Sklad.Converters"
+             mc:Ignorable="d" 
+             Title="Palety" Height="450" Width="800"
+             WindowStartupLocation="CenterScreen">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top Row: Buttons -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <Button Command="{Binding AddCommand}" Margin="5" ToolTip="Přidat paletu">
+                <Image Source="/Sklad;component/Images/Icons/Add.png" Width="24" Height="24"/>
+            </Button>
+            <Button Command="{Binding RemoveCommand}" Margin="5" ToolTip="Odebrat paletu">
+                <Image Source="/Sklad;component/Images/Icons/Delete.png" Width="24" Height="24"/>
+            </Button>
+            
+            <Button Command="{Binding SaveCommand}" Margin="20,5,5,5" Content="Uložit data" Padding="10,5"/>
+        </StackPanel>
+
+        <!-- Bottom Row: GroupBox with DataGrid -->
+        <GroupBox Grid.Row="1" Header="Palety" Margin="5">
+            <DataGrid ItemsSource="{Binding PaletyCol}" 
+                      SelectedItem="{Binding SelectedPaleta}" 
+                      AutoGenerateColumns="False" 
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      SelectionMode="Single">
+                <DataGrid.Columns>
+                    <!-- Paleta ID -->
+                    <DataGridTextColumn Header="ID" Binding="{Binding PaletaId}" IsReadOnly="True" Width="Auto"/>
+
+                    <!-- Typ Palety -->
+                    <DataGridTemplateColumn Header="Typ palety" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Typ, Converter={StaticResource EnumToStringConverter}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding DataContext.PaletaTypValues, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          SelectedItem="{Binding Typ, UpdateSourceTrigger=PropertyChanged}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource EnumToStringConverter}}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Stav Palety -->
+                    <DataGridTemplateColumn Header="Stav palety" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Stav, Converter={StaticResource EnumToStringConverter}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding DataContext.PaletaStavValues, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          SelectedItem="{Binding Stav, UpdateSourceTrigger=PropertyChanged}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource EnumToStringConverter}}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Uložení -->
+                    <DataGridTextColumn Header="Uložení" Binding="{Binding AdresaUlozeni}" Width="*"/>
+
+                    <!-- Materiál -->
+                    <DataGridTemplateColumn Header="Materiál" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Material.Nazev}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <DockPanel>
+                                    <Button Content="..." Width="30" DockPanel.Dock="Right"
+                                            Command="{Binding DataContext.SelectMaterialCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"/>
+                                    <ComboBox ItemsSource="{Binding DataContext.MaterialyCol, RelativeSource={RelativeSource AncestorType=Window}}"
+                                              SelectedItem="{Binding Material, UpdateSourceTrigger=PropertyChanged}"
+                                              DisplayMemberPath="Nazev"/>
+                                </DockPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Množství -->
+                    <DataGridTextColumn Header="Množství" Binding="{Binding Mnozstvi}" Width="Auto"/>
+
+                    <!-- Komentář -->
+                    <DataGridTextColumn Header="Komentář" Binding="{Binding Komentar}" Width="*"/>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+    </Grid>
+</Window>
